@@ -2,107 +2,125 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
   }
-  
+
   body {
     @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100;
+    overflow-x: hidden;
+    width: 100%;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
   }
 }
 
 @layer components {
+  /* ─── Layout ──────────────────────────────────── */
+  .section-container {
+    @apply w-full max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16;
+  }
+
+  /* ─── Typography ──────────────────────────────── */
+  .section-heading {
+    @apply text-3xl sm:text-4xl md:text-5xl font-bold leading-tight;
+  }
+
+  .section-subheading {
+    @apply text-xl sm:text-2xl font-semibold;
+  }
+
+  /* ─── Divider ─────────────────────────────────── */
+  .section-divider {
+    @apply w-12 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto mt-3 rounded-full;
+  }
+
+  /* ─── Glass & Glowing Elements ────────────────── */
   .glass-morphism {
-    @apply bg-white/10 dark:bg-gray-800/10 backdrop-blur-md border border-white/20 dark:border-gray-700/20;
+    @apply bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl border border-white/40 dark:border-gray-700/50 shadow-xl;
   }
   
+  .glass-card {
+    @apply bg-white/70 dark:bg-gray-800/60 backdrop-blur-lg border border-white/50 dark:border-gray-700/50 shadow-[0_8px_30px_rgba(59,130,246,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.25)];
+  }
+
+  .glow-border {
+    @apply relative before:absolute before:-inset-[1px] before:rounded-[inherit] before:bg-gradient-to-r before:from-blue-500/50 before:to-purple-500/50 before:-z-10 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-500;
+  }
+
+  /* ─── Gradient text ───────────────────────────── */
   .gradient-text {
-    @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-cyan-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent animate-text-shimmer bg-[length:200%_200%];
   }
-  
+
+  /* ─── Buttons ─────────────────────────────────── */
   .btn-primary {
-    @apply bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition-all duration-300;
+    @apply relative inline-flex items-center justify-center gap-2
+           bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600
+           hover:from-blue-500 hover:via-purple-500 hover:to-indigo-500
+           dark:from-cyan-500 dark:via-purple-500 dark:to-pink-500
+           dark:hover:from-cyan-400 dark:hover:via-purple-400 dark:hover:to-pink-400
+           text-white text-sm font-bold
+           px-6 py-3 rounded-xl
+           shadow-[0_0_20px_rgba(37,99,235,0.3)]
+           hover:shadow-[0_0_30px_rgba(168,85,247,0.5)]
+           hover:-translate-y-1 hover:scale-105 active:scale-95
+           transition-all duration-500 overflow-hidden
+           animate-gradient bg-[length:200%_200%];
   }
-  
+
+  .btn-primary::before {
+    @apply content-[''] absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full opacity-0 z-0 transition-transform duration-700;
+  }
+  .btn-primary:hover::before {
+    @apply translate-x-full opacity-100;
+  }
+
+  .btn-primary span, .btn-primary svg {
+    @apply relative z-10;
+  }
+
   .btn-secondary {
-    @apply border-2 border-blue-600 text-blue-600 dark:text-blue-400 px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transform hover:-translate-y-1 transition-all duration-300;
-  }
-  
-  .card-hover {
-    @apply transform hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl;
-  }
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-gray-100 dark:bg-gray-800;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 dark:bg-gray-600 rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-500 dark:bg-gray-500;
-}
-
-/* Animations */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+    @apply relative inline-flex items-center justify-center gap-2
+           border-[1.5px] border-blue-600/50 text-blue-600 dark:border-cyan-400/50 dark:text-cyan-400
+           text-sm font-bold
+           px-6 py-3 rounded-xl
+           hover:bg-blue-50 dark:hover:bg-cyan-900/20
+           hover:border-blue-600 dark:hover:border-cyan-400
+           hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] dark:hover:shadow-[0_0_20px_rgba(34,211,238,0.15)]
+           hover:-translate-y-1 hover:scale-105 active:scale-95
+           transition-all duration-500 overflow-hidden;
   }
 }
 
-.animate-fadeInUp {
-  animation: fadeInUp 0.8s ease-out;
-}
+/* ─── Scrollbar ───────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { @apply bg-gray-100 dark:bg-gray-800; }
+::-webkit-scrollbar-thumb { @apply bg-gray-300 dark:bg-gray-600 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-gray-400 dark:bg-gray-500; }
 
-@keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
-}
+/* ─── Animations ──────────────────────────────────── */
+@keyframes blink { 50% { opacity: 0; } }
+.animate-blink { animation: blink 1s step-end infinite; }
 
-@keyframes blink {
-  50% { border-color: transparent }
-}
-
-.typewriter {
-  overflow: hidden;
-  border-right: 3px solid;
-  white-space: nowrap;
-  animation: typing 3.5s steps(40, end), blink 0.75s step-end infinite;
+/* ─── Accessibility ───────────────────────────────── */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  @apply outline-2 outline-offset-2 outline-blue-500;
 }

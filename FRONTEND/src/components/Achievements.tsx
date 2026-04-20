@@ -1,76 +1,67 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Trophy, Award, Medal } from 'lucide-react'
-import TiltHover from './TiltHover'
+import { achievementsData } from '../lib/data'
+import ParticleBackground from './ParticleBackground'
+import FloatingBlobs from './FloatingBlobs'
+import Image from 'next/image'
+import TiltHover, { TiltEffectType } from './TiltHover'
 
 const Achievements = () => {
-  const achievements = [
-    {
-      icon: <Trophy className="w-8 h-8" />,
-      title: "1st Position",
-      description: "Treasure Hunt Competition",
-      details: "Led team to victory in technical treasure hunt competition",
-      color: "from-yellow-400 to-orange-400"
-    },
-    {
-      icon: <Award className="w-8 h-8" />,
-      title: "Best Project",
-      description: "College Hackathon 2023",
-      details: "Developed innovative solution for real-world problem",
-      color: "from-blue-400 to-purple-400"
-    },
-    {
-      icon: <Medal className="w-8 h-8" />,
-      title: "Technical Excellence",
-      description: "Code-A-Nova Recognition",
-      details: "Recognized for outstanding contribution to frontend development",
-      color: "from-green-400 to-teal-400"
-    }
-  ]
-
   return (
-    <section id="achievements" className="py-20 bg-gray-50 dark:bg-gray-800">
-      <div className="container mx-auto px-4">
+    <section id="achievements" className="py-20 sm:py-24 bg-gray-50/50 dark:bg-gray-950 relative overflow-hidden">
+      <ParticleBackground color="#ec4899" count={80} speed={0.4} size={0.06} />
+      <FloatingBlobs colors={['orange', 'red', 'yellow', 'pink']} />
+      
+      <div className="section-container relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
         >
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-            <span className="gradient-text">Achievements</span>
+          <h2 className="section-heading mb-2">
+            My <span className="gradient-text">Achievements</span>
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto" />
+          <div className="section-divider" />
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {achievements.map((achievement, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              className="text-center h-full"
-            >
-              <TiltHover className="h-full w-full">
-                <div className="glass-morphism p-8 rounded-xl h-full transition-all duration-300 hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] bg-white/40 dark:bg-gray-800/40 backdrop-blur-md">
-                  <div className={`inline-flex p-4 rounded-full bg-gradient-to-r ${achievement.color} text-white mb-6 shadow-lg`}>
-                    {achievement.icon}
+        <div className="grid md:grid-cols-2 gap-8">
+          {achievementsData.map((item, index) => {
+            const effectTypes: TiltEffectType[] = ['spotlight', 'borderGlow']
+            const baseColors = ['rgba(236,72,153,0.03)', 'rgba(59,130,246,0.03)']
+            const glareColors = ['rgba(236,72,153,0.4)', 'rgba(59,130,246,0.4)']
+
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.9, x: index % 2 === 0 ? -30 : 30 }}
+                whileInView={{ opacity: 1, scale: 1, x: 0 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: index * 0.1, type: 'spring' }}
+                className="h-full"
+              >
+                <TiltHover
+                  className="h-full rounded-2xl"
+                  glareColor={glareColors[index % glareColors.length]}
+                  baseColor={baseColors[index % baseColors.length]}
+                  effectType={effectTypes[index % effectTypes.length]}
+                >
+                  <div className="flex flex-col sm:flex-row items-center gap-6 glass-card p-6 h-full rounded-2xl bg-white/70 dark:bg-gray-800/80 transition-all duration-300">
+                    <div className="flex-shrink-0 w-32 h-32 relative overflow-hidden rounded-xl shadow-lg group-hover:scale-[1.02] transition-transform">
+                      <Image src={item.image} alt={item.title} fill className="object-cover" />
+                    </div>
+                    <div className="flex-1 text-center sm:text-left">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{item.title}</h3>
+                      <p className="text-sm text-pink-500 dark:text-pink-400 font-bold mb-3">{item.date}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">{item.description}</p>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-bold mb-3">{achievement.title}</h3>
-                  <h4 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-3">
-                    {achievement.description}
-                  </h4>
-                  <p className="text-gray-500 dark:text-gray-400">
-                    {achievement.details}
-                  </p>
-                </div>
-              </TiltHover>
-            </motion.div>
-          ))}
+                </TiltHover>
+              </motion.div>
+            )
+          })}
         </div>
       </div>
     </section>

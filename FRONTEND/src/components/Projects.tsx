@@ -1,244 +1,178 @@
 'use client'
 
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ExternalLink, Github, Star } from 'lucide-react'
-import TiltHover from './TiltHover'
+import TiltHover, { TiltEffectType } from './TiltHover'
+import Image from 'next/image'
+import { projectsData } from '../lib/data'
+import ParticleBackground from './ParticleBackground'
+import FloatingBlobs from './FloatingBlobs'
 
 const Projects = () => {
-  const projects = [
-    {
-      title: "Maa Ke Hath Khana",
-      description: "A comprehensive MERN stack food ordering platform with seamless user experience and secure payment integration.",
-      image: "/api/placeholder/600/400",
-      features: [
-        "Complete food ordering system",
-        "Razorpay payment integration",
-        "User authentication & authorization",
-        "Responsive UI/UX design",
-        "Real-time order tracking",
-        "Admin dashboard"
-      ],
-      technologies: ["MongoDB", "Express.js", "React", "Node.js", "Razorpay", "JWT", "Tailwind CSS"],
-      liveDemo: "https://maakehathkhana.com",
-      github: "https://github.com/yeshgoyal/maakehathkhana",
-      featured: true
-    },
-    {
-      title: "Doctor Appointment System",
-      description: "A modern web application for booking doctor appointments with intuitive interface and form validation.",
-      image: "/api/placeholder/600/400",
-      features: [
-        "Doctor appointment booking",
-        "Patient management system",
-        "Advanced form validation",
-        "Responsive design",
-        "Real-time availability"
-      ],
-      technologies: ["React", "JavaScript", "CSS", "Tailwind CSS", "REST APIs"],
-      liveDemo: "https://doctor-appointments.com",
-      github: "https://github.com/yeshgoyal/doctor-appointments",
-      featured: false
-    },
-    {
-      title: "Weather App",
-      description: "A Python-based weather application that fetches real-time weather data from external APIs.",
-      image: "/api/placeholder/600/400",
-      features: [
-        "Real-time weather data",
-        "Location-based search",
-        "Weather forecasts",
-        "Beautiful UI",
-        "API integration"
-      ],
-      technologies: ["Python", "API Integration", "JSON", "Data Processing"],
-      liveDemo: "https://weather-app-demo.com",
-      github: "https://github.com/yeshgoyal/weather-app",
-      featured: false
-    },
-    {
-      title: "Interactive Chatbot",
-      description: "An intelligent chatbot application built with Python that provides conversational AI capabilities.",
-      image: "/api/placeholder/600/400",
-      features: [
-        "Natural language processing",
-        "Interactive conversations",
-        "Context awareness",
-        "User-friendly interface",
-        "Real-time responses"
-      ],
-      technologies: ["Python", "NLP", "Machine Learning", "API Integration"],
-      liveDemo: "https://chatbot-demo.com",
-      github: "https://github.com/yeshgoyal/chatbot",
-      featured: false
-    },
-    {
-      title: "Calculator Application",
-      description: "A feature-rich calculator application with advanced mathematical operations and clean interface.",
-      image: "/api/placeholder/600/400",
-      features: [
-        "Basic & advanced operations",
-        "History tracking",
-        "Keyboard shortcuts",
-        "Responsive design",
-        "Error handling"
-      ],
-      technologies: ["Python", "Tkinter", "Mathematical Operations"],
-      liveDemo: "https://calculator-demo.com",
-      github: "https://github.com/yeshgoyal/calculator",
-      featured: false
-    }
+  // Array of dynamic glare colors
+  const glareColors = [
+    'rgba(59, 130, 246, 0.4)', // blue-500
+    'rgba(168, 85, 247, 0.4)', // purple-500
+    'rgba(34, 197, 94, 0.4)',  // green-500
+    'rgba(249, 115, 22, 0.4)', // orange-500
+    'rgba(236, 72, 153, 0.4)', // pink-500
+  ]
+  
+  // Base overlay colors to give each card a distinct physical look
+  const baseCardColors = [
+    'rgba(59, 130, 246, 0.03)', // subtle blue
+    'rgba(168, 85, 247, 0.03)', // subtle purple 
+    'rgba(34, 197, 94, 0.03)',  // subtle green
   ]
 
+  // Various hover mechanics
+  const effectTypes: TiltEffectType[] = ['glare', 'spotlight', 'borderGlow']
+
   return (
-    <section id="projects" className="py-20 bg-white dark:bg-gray-900">
-      <div className="container mx-auto px-4">
+    <section id="projects" className="py-20 sm:py-24 bg-white dark:bg-gray-950 relative overflow-hidden">
+      {/* Background layer */}
+      <ParticleBackground color="#8b5cf6" count={150} speed={0.5} size={0.06} />
+      <FloatingBlobs colors={['emerald', 'blue', 'cyan', 'purple']} />
+
+      <div className="section-container relative z-10">
+        {/* Heading */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
         >
-          <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+          <h2 className="section-heading mb-2">
             My <span className="gradient-text">Projects</span>
           </h2>
-          <div className="w-20 h-1 bg-gradient-to-r from-blue-600 to-purple-600 mx-auto" />
-          <p className="text-gray-600 dark:text-gray-300 mt-6 max-w-2xl mx-auto">
-            Here are some of my recent projects that showcase my skills and experience in web development.
+          <div className="section-divider" />
+          <p className="text-gray-500 dark:text-gray-400 mt-5 max-w-lg mx-auto text-sm sm:text-base px-4">
+            A selection of projects that showcase my skills and experience in web development.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: index * 0.1 }}
-              className={`relative group h-full ${project.featured ? 'lg:col-span-2' : ''}`}
-            >
-              <TiltHover className="h-full w-full">
-                <div className="glass-morphism rounded-xl overflow-hidden h-full flex flex-col transition-all duration-300 relative group-hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] dark:group-hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] bg-white/40 dark:bg-gray-800/40 backdrop-blur-md">
-                {/* Featured Badge */}
-                {project.featured && (
-                  <div className="absolute top-4 right-4 z-10">
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      whileInView={{ scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: 0.3 }}
-                      className="flex items-center space-x-1 bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-3 py-1 rounded-full text-sm font-semibold"
-                    >
-                      <Star className="w-4 h-4" />
-                      <span>Featured</span>
-                    </motion.div>
-                  </div>
-                )}
-
-                {/* Project Image */}
-                <div className="relative h-48 lg:h-56 overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                </div>
-
-                {/* Project Content */}
-                <div className="p-6">
-                  <h3 className="text-xl lg:text-2xl font-bold mb-3">{project.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 line-clamp-3">
-                    {project.description}
-                  </p>
-
-                  {/* Features */}
-                  <div className="mb-4">
-                    <h4 className="font-semibold mb-2 text-sm">Key Features:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {project.features.slice(0, 3).map((feature, featureIndex) => (
-                        <span
-                          key={featureIndex}
-                          className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full"
-                        >
-                          {feature}
-                        </span>
-                      ))}
-                      {project.features.length > 3 && (
-                        <span className="text-xs bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full">
-                          +{project.features.length - 3} more
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Technologies */}
-                  <div className="mb-6">
-                    <h4 className="font-semibold mb-2 text-sm">Technologies:</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {project.technologies.map((tech, techIndex) => (
-                        <span
-                          key={techIndex}
-                          className="text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex space-x-3">
-                    <motion.a
-                      href={project.liveDemo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex-1 btn-primary text-center flex items-center justify-center space-x-2"
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                      <span>Live Demo</span>
-                    </motion.a>
+        {/* Grid: 2 columns for Desktop/Tablet/Laptop, 1 for mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+          {projectsData.map((project, index) => {
+            const glowColor = glareColors[index % glareColors.length]
+            const baseColor = baseCardColors[index % baseCardColors.length]
+            const effectType = effectTypes[index % effectTypes.length]
+            
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.95, y: 40 }}
+                whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                viewport={{ once: false, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: index * 0.1, type: "spring", stiffness: 100 }}
+                className="group flex flex-col h-full"
+              >
+                <TiltHover 
+                  className="h-full w-full rounded-2xl" 
+                  glareColor={glowColor}
+                  baseColor={baseColor}
+                  effectType={effectType}
+                >
+                  <div className="flex flex-col h-full glass-card rounded-2xl glow-border overflow-hidden transition-all duration-300">
                     
-                    <motion.a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="flex-1 btn-secondary text-center flex items-center justify-center space-x-2"
-                    >
-                      <Github className="w-4 h-4" />
-                      <span>GitHub</span>
-                    </motion.a>
+                    {/* Project Image placeholder */}
+                    <div className="relative w-full h-56 sm:h-64 overflow-hidden">
+                      <Image 
+                        src={project.image} 
+                        alt={project.title} 
+                        fill 
+                        className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                      {project.featured && (
+                        <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[11px] font-bold px-3 py-1.5 rounded-full shadow-lg">
+                          <Star className="w-3.5 h-3.5 fill-current" />
+                          FEATURED
+                        </div>
+                      )}
+                      {/* Gradient overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80" />
+                    </div>
+
+                    {/* Content */}
+                    <div className="flex flex-col flex-1 p-6 sm:p-8 relative z-10">
+                      <h3 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 mb-3 group-hover:dark:to-gray-100 transition-colors duration-300">
+                        {project.title}
+                      </h3>
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-6 leading-relaxed flex-shrink-0">
+                        {project.description}
+                      </p>
+
+                      {/* Features */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {project.features.slice(0, 3).map((f, fi) => (
+                          <span key={fi} className="text-[10px] font-bold tracking-wider uppercase bg-gray-100/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-300 px-3 py-1.5 rounded-full border border-gray-200/50 dark:border-gray-700/50">
+                            {f}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Technologies */}
+                      <div className="flex flex-wrap gap-2 mb-8 flex-1 content-start">
+                        {project.technologies.map((tech, ti) => (
+                          <span key={ti} className="text-[10px] font-bold tracking-wider uppercase bg-blue-50/80 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-3 py-1.5 rounded-full border border-blue-200/50 dark:border-blue-700/30 shadow-[inset_0_1px_rgba(255,255,255,0.2)]">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Buttons */}
+                      <div className="flex gap-4 mt-auto">
+                        <motion.a
+                          href={project.liveDemo}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="flex-1 btn-primary flex items-center justify-center gap-2 py-3 rounded-xl"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          <span>Live Demo</span>
+                        </motion.a>
+                        <motion.a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="flex-1 btn-secondary flex items-center justify-center gap-2 py-3 rounded-xl"
+                        >
+                          <Github className="w-4 h-4" />
+                          <span>Code</span>
+                        </motion.a>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </TiltHover>
-          </motion.div>
-          ))}
+                </TiltHover>
+              </motion.div>
+            )
+          })}
         </div>
 
-        {/* View All Projects Button */}
+        {/* View All */}
         <motion.div
-          initial={{ opacity: 0, y: 50 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.5 }}
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
           className="text-center mt-12"
         >
           <motion.a
             href="https://github.com/yeshgoyal"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="btn-secondary inline-flex items-center space-x-2"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="btn-secondary inline-flex items-center gap-2 px-8 py-3.5 rounded-xl border-[1.5px]"
           >
             <Github className="w-5 h-5" />
-            <span>View All Projects on GitHub</span>
+            <span className="font-bold">View All on GitHub</span>
           </motion.a>
         </motion.div>
       </div>
